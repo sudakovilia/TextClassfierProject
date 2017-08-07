@@ -7,7 +7,7 @@ import ru.caf82.result.exceptions.InconveninentShapeException;
  */
 public class MathService {
 
-    public static float dotProduct(float[] a, float[] b) throws InconveninentShapeException {
+    public static float dotProduct(double[] a, double[] b) throws InconveninentShapeException {
         if(a.length != b.length) {
             throw new InconveninentShapeException("Shape a:" + a.length + " is not equal shape b: "+b.length);
         }

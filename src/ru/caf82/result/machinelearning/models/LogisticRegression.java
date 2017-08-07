@@ -2,20 +2,31 @@ package ru.caf82.result.machinelearning.models;
 
 import ru.caf82.result.exceptions.InconveninentShapeException;
 import ru.caf82.result.exceptions.ModelNotFittedException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import ru.caf82.result.services.MathService;
+
+import java.util.Random;
+
 /**
  * Created by kinetik on 07.08.17.
  */
 public class LogisticRegression implements MlModel {
-
+    /**
+     * alpha - l2 regularizer coefficient
+     * betta - l1 regularizer coefficient
+     * maxIter - number of iteration until converge
+     * learnRate - learning rate of the algorithm
+     * initializer - random initializer for weights of the model
+     * fitted - is used for understanding if the model has trained
+     * parralize - change GD to SGD with parallel computation
+     */
     private float alpha;
     private float betta;
     private int maxIter;
     private boolean parralize = true;
     private float learnRate;
+    private Random initializer = new Random();
 
-    private float[] weights;
+    private double[] weights;
     private boolean fitted = false;
 
     public LogisticRegression(float alpha, float betta, int maxIter, float learnRate, boolean parralize) {
@@ -33,51 +44,119 @@ public class LogisticRegression implements MlModel {
         this.learnRate = learnRate;
     }
 
+    /**
+     *
+     * @param X matrix objects (in row) and features (in columns)
+     * @param y model answers
+     * @return fitted model
+     * the algorithm is the follow:
+     *      step 1. shape check. We don't check features number equality (task //TODO)
+     *      step 2. weights initialization. Weights are initialized from normal distribution (mean = 0, std = 1)
+     *      step 3. y shift. Input has y values 0 and 1. We shift it to -1 and 1
+     *      step 4. GradientDescend:
+     *          while number_of_iteration < maximum_iteration and delta_loss < threshold:
+     *              old_loss = cross_entropy(X, y)
+     *              weights += learning_rate * delta_weight
+     *              delta_loss = abs(old_loss - cross_entropy(X, y))
+     *      step 5. set model fitted to true
+     * @throws InconveninentShapeException
+     */
+
+
     @Override
-    public MlModel train(float[][] X, int[] y) throws InconveninentShapeException {
-        if(X.length!=y.length) {
+    public MlModel train(double[][] X, int[] y) throws InconveninentShapeException {
+        if(X.length != y.length) {
             throw new InconveninentShapeException();
         }
 
+        this.weights = new double[X[0].length];
+        for(int i = 0; i < X[0].length; i++) {
+            this.weights[i] = initializer.nextGaussian();
+        }
 
+        for(int j = 0; j < y.length; j++) {
+            y[j] = y[j] == 1 ? 1 : -1;
+        }
 
-        int iterCounter=1;
-        double crossEntropyChange = 0;
-        double prevCrossEntropy = 0;
-        double newCrossEntropy = 0;
+        int iterCounter = 1;
+        double crossEntropyChange;
+        double prevCrossEntropy;
+        double newCrossEntropy;
+
         do {
             prevCrossEntropy = crossEntropy(X, y);
-
-
-            iterCounter+=1;
+            double[] weightDelta = deltaWeightsCounter(X, y);
+            for(int i=0;i<weightDelta.length;i++) {
+                this.weights[i] += this.learnRate * weightDelta[i];
+            }
+            newCrossEntropy = crossEntropy(X, y);
+            crossEntropyChange = Math.abs(newCrossEntropy - prevCrossEntropy);
+            iterCounter ++;
             if(iterCounter>=this.maxIter) {
                 break;
             }
         } while (crossEntropyChange >= 0.01);
+        this.fitted = true;
+        return this;
     }
 
+    /**
+     *  The function return class for given vector
+     * @param X feature vector describing one object
+     * @return y value, zero or one
+     * @throws ModelNotFittedException
+     * @throws InconveninentShapeException
+     */
+
     @Override
-    public int predict(float[] X) throws ModelNotFittedException, InconveninentShapeException {
+    public int predict(double[] X) throws ModelNotFittedException, InconveninentShapeException {
         if(!fitted){
             throw new ModelNotFittedException();
         }
         return MathService.dotProduct(X, this.weights) >= 0 ? 1 : 0;
     }
 
+    /**
+     *  The function return probability of class one
+     * @param X feature vector describing an object
+     * @return probability of class 1 for given vector
+     * @throws ModelNotFittedException
+     * @throws InconveninentShapeException
+     */
+
     @Override
-    public double predictProba(float[] X) throws ModelNotFittedException, InconveninentShapeException {
+    public double predictProba(double[] X) throws ModelNotFittedException, InconveninentShapeException {
         if(!fitted) {
             throw new ModelNotFittedException();
         }
-        return Math.exp(MathService.dotProduct(X, this.weights))/(1+Math.exp(MathService.dotProduct(X, this.weights)));
+        return Math.exp(MathService.dotProduct(X, this.weights)) /(1 +
+                Math.exp(MathService.dotProduct(X, this.weights)));
     }
 
+    /**
+     *  The function compute indent for an object y*<w, x>
+     * @param X the feature vector describing an object
+     * @param y the object class
+     * @return y*<w, x>
+     * @throws InconveninentShapeException
+     */
 
-    private double indentCounter(float[] X, int y) throws  InconveninentShapeException {
+    private double indentCounter(double[] X, int y) throws  InconveninentShapeException {
         return y * MathService.dotProduct(X, this.weights);
     }
 
-    private double crossEntropy(float[][] X, int[] y) throws InconveninentShapeException {
+    //TODO add bias part
+
+    /**
+     *  The function count cross-entropy log function in the context:
+     *      1/n * sum(ln(1 + e^(-y[i] * <w,x[i]>)) for i in 0..n-1
+     * @param X matrix object (row) - feature (column)
+     * @param y
+     * @return
+     * @throws InconveninentShapeException
+     */
+
+    private double crossEntropy(double[][] X, int[] y) throws InconveninentShapeException {
         double sum = 0;
         if(X.length!=y.length) {
             throw new InconveninentShapeException();
@@ -88,7 +167,7 @@ public class LogisticRegression implements MlModel {
         return sum/y.length;
     }
 
-    private double[] deltaWeightsCounter(float[][] X, int[] y) throws InconveninentShapeException {
+    private double[] deltaWeightsCounter(double[][] X, int[] y) throws InconveninentShapeException {
         double[] weightsUpdate = new double[this.weights.length];
         for(int i=0;i<X[0].length;i++) {
             double weightDelta = 2*this.alpha*this.weights[i] +
