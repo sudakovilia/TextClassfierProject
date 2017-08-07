@@ -12,5 +12,5 @@ public interface MlModel{
 
     int predict(float[] X) throws ModelNotFittedException, InconveninentShapeException;
 
-    float predictProba(float[] X) throws ModelNotFittedException, InconveninentShapeException;
+    double predictProba(float[] X) throws ModelNotFittedException, InconveninentShapeException;
 }

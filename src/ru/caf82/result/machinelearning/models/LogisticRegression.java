@@ -13,21 +13,24 @@ public class LogisticRegression implements MlModel {
     private float betta;
     private int maxIter;
     private boolean parralize = true;
+    private float learnRate;
 
     private float[] weights;
     private boolean fitted = false;
 
-    public LogisticRegression(float alpha, float betta, int maxIter, boolean parralize) {
+    public LogisticRegression(float alpha, float betta, int maxIter, float learnRate, boolean parralize) {
         this.alpha = alpha;
         this.betta = betta;
         this.maxIter = maxIter;
+        this.learnRate = learnRate;
         this.parralize = parralize;
     }
 
-    public LogisticRegression(float alpha, float betta, int maxIter) {
+    public LogisticRegression(float alpha, float betta, int maxIter, float learnRate) {
         this.alpha = alpha;
         this.betta = betta;
         this.maxIter = maxIter;
+        this.learnRate = learnRate;
     }
 
     @Override
@@ -40,20 +43,20 @@ public class LogisticRegression implements MlModel {
         if(!fitted){
             throw new ModelNotFittedException();
         }
-        return Math.round(MathService.dotProduct(X, this.weights));
+        return MathService.dotProduct(X, this.weights) >= 0 ? 1 : 0;
     }
 
     @Override
-    public float predictProba(float[] X) throws ModelNotFittedException, InconveninentShapeException {
+    public double predictProba(float[] X) throws ModelNotFittedException, InconveninentShapeException {
         if(!fitted) {
             throw new ModelNotFittedException();
         }
-        return MathService.dotProduct(X, this.weights);
+        return Math.exp(MathService.dotProduct(X, this.weights))/(1+Math.exp(MathService.dotProduct(X, this.weights)));
     }
 
-    private double logistic(float[] X, int y) throws InconveninentShapeException {
-        float indent = y * MathService.dotProduct(X, this.weights);
-        return 1./(1.+Math.exp(-indent));
+
+    private double indentCounter(float[] X, int y) throws  InconveninentShapeException {
+        return y * MathService.dotProduct(X, this.weights);
     }
 
     private double crossEntropy(float[][] X, int[] y) throws InconveninentShapeException {
@@ -62,7 +65,7 @@ public class LogisticRegression implements MlModel {
             throw new InconveninentShapeException();
         }
         for(int i=0;i<y.length;i++) {
-            sum = sum*i/(i+1) + Math.log(1+logistic(X[i], y[i]))/(i+1);
+            sum = sum*i/(i+1) + Math.log(1+Math.exp(-indentCounter(X[i], y[i])))/(i+1);
         }
         return sum;
     }
