@@ -8,7 +8,7 @@ import ru.caf82.result.exceptions.ModelNotFittedException;
  */
 public interface MlModel{
 
-    MlModel train(float[][] X, int[] y);
+    MlModel train(float[][] X, int[] y) throws InconveninentShapeException;
 
     int predict(float[] X) throws ModelNotFittedException, InconveninentShapeException;
 

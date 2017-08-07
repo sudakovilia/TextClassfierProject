@@ -34,8 +34,26 @@ public class LogisticRegression implements MlModel {
     }
 
     @Override
-    public MlModel train(float[][] X, int[] y) {
-        throw new NotImplementedException();
+    public MlModel train(float[][] X, int[] y) throws InconveninentShapeException {
+        if(X.length!=y.length) {
+            throw new InconveninentShapeException();
+        }
+
+
+
+        int iterCounter=1;
+        double crossEntropyChange = 0;
+        double prevCrossEntropy = 0;
+        double newCrossEntropy = 0;
+        do {
+            prevCrossEntropy = crossEntropy(X, y);
+
+
+            iterCounter+=1;
+            if(iterCounter>=this.maxIter) {
+                break;
+            }
+        } while (crossEntropyChange >= 0.01);
     }
 
     @Override
@@ -65,8 +83,24 @@ public class LogisticRegression implements MlModel {
             throw new InconveninentShapeException();
         }
         for(int i=0;i<y.length;i++) {
-            sum = sum*i/(i+1) + Math.log(1+Math.exp(-indentCounter(X[i], y[i])))/(i+1);
+            sum += Math.log(1+Math.exp(-indentCounter(X[i], y[i])));
         }
-        return sum;
+        return sum/y.length;
+    }
+
+    private double[] deltaWeightsCounter(float[][] X, int[] y) throws InconveninentShapeException {
+        double[] weightsUpdate = new double[this.weights.length];
+        for(int i=0;i<X[0].length;i++) {
+            double weightDelta = 2*this.alpha*this.weights[i] +
+                    this.betta*(this.weights[i]>0 ? 1 : this.weights[i]==0 ? 0 : -1);
+            int crossEntropySum = 0;
+            for(int j=0; j<X.length;j++) {
+                crossEntropySum += y[j]*X[j][i]/(1+Math.exp(-indentCounter(X[j], y[j])));
+            }
+            weightDelta += - crossEntropySum / X.length;
+            weightDelta = -weightDelta;
+            weightsUpdate[i] = weightDelta;
+        }
+        return weightsUpdate;
     }
 }
