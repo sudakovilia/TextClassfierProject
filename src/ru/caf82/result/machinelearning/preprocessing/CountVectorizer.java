@@ -1,6 +1,5 @@
 package ru.caf82.result.machinelearning.preprocessing;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -99,6 +98,11 @@ public class CountVectorizer implements SequenceProcessor, Transformer {
         return matrix;
     }
 
+    /**
+     * This function make text "cleaning" and create list of words.
+     * @param text -- String with text.
+     * @return list of words from text.
+     */
     @Override
     public List<String> preprocess(String text) {
         String modifiedText = new String(text);
@@ -116,6 +120,12 @@ public class CountVectorizer implements SequenceProcessor, Transformer {
         return wordsList;
     }
 
+    /**
+     * Get list of words that represent text and return map with word frequency,
+     * WITHOUT changing matrix field.
+     * @param words -- list of words (String) from one text.
+     * @return word frequency in map
+     */
     private Map<String, Integer> countWords(List<String> words) {
         Set<String> keys = new HashSet<String>(words);
         Map<String, Integer> resultTextCount = new HashMap<>();
@@ -126,6 +136,12 @@ public class CountVectorizer implements SequenceProcessor, Transformer {
         return resultTextCount;
     }
 
+    /**
+     * Get list of words that represent text and return map with word frequency,
+     * WITH changing matrix field.
+     * @param words -- list of words (strings) from one text.
+     * @return word frequency in map
+     */
     private Map<String, Integer> countWordsAndEditMatrix(List<String> words) {
         Set<String> keys = new HashSet<String>(words);
         Map<String, Integer> resultTextCount = new HashMap<>();
@@ -138,6 +154,10 @@ public class CountVectorizer implements SequenceProcessor, Transformer {
         return resultTextCount;
     }
 
+    /**
+     * Learn matrix by parsing all texts text.
+     * @param listOfTexts -- list of texts in String
+     */
     @Override
     public void fit(List<String> listOfTexts) {
         for (String text: listOfTexts) {
@@ -145,7 +165,12 @@ public class CountVectorizer implements SequenceProcessor, Transformer {
             countWordsAndEditMatrix(words);
         }
     }
-    
+
+    /**
+     * Learn matrix by parsing all texts text and return list with word frequency.
+     * @param listOfTexts -- list of texts in String
+     * @return list of maps with word frequency
+     */
     @Override
     public List<Map<String, Integer>> fitAndTransform(List<String> listOfTexts) {
         List<Map<String, Integer>> resultForAllTextsCount =
@@ -157,6 +182,11 @@ public class CountVectorizer implements SequenceProcessor, Transformer {
         return resultForAllTextsCount;
     }
 
+    /**
+     * Return list with word frequency.
+     * @param listOfTexts -- list of texts in String
+     * @return list of maps with word frequency
+     */
     @Override
     public List<Map<String, Integer>> transform(List<String> listOfTexts) {
         List<Map<String, Integer>> resultForAllTextsCount =
@@ -168,8 +198,10 @@ public class CountVectorizer implements SequenceProcessor, Transformer {
         return resultForAllTextsCount;
     }
 
+    /**
+     * Test for this class
+     */
     public static void main(String[] args) {
-        // Test
 
         CountVectorizer countVectorizer = new CountVectorizer();
 
