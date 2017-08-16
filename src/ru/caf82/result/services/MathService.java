@@ -17,4 +17,12 @@ public class MathService {
         }
         return sum;
     }
+
+    public static double sigmoid(double x) {
+        return 1/(1+Math.exp(-x));
+    }
+
+    public static double sigmoid(double[] x, double[] w) throws InconveninentShapeException {
+        return sigmoid(MathService.dotProduct(x, w));
+    }
 }
