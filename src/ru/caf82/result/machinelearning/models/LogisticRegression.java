@@ -4,6 +4,7 @@ import ru.caf82.result.exceptions.InconveninentShapeException;
 import ru.caf82.result.exceptions.ModelNotFittedException;
 import ru.caf82.result.services.MathService;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -67,6 +68,7 @@ public class LogisticRegression implements MlModel {
         if (X.length != y.length) {
             throw new InconveninentShapeException();
         }
+        X = MathService.matrixNormalize(X);
         double[][] transformedX = new double[X.length][X[0].length + 1];
         for (int i = 0; i < X.length; i++) {
             System.arraycopy(X[i], 0, transformedX[i], 0, X[i].length);
@@ -74,24 +76,26 @@ public class LogisticRegression implements MlModel {
         }
         this.weights = new double[transformedX[0].length];
         for (int i = 0; i < transformedX[0].length; i++) {
-            this.weights[i] = initializer.nextGaussian();
+            //this.weights[i] = initializer.nextGaussian();
+            this.weights[i] = 0;
         }
-        double lossChange = 1000;
+        double lossChange;
         int iterCounter = 0;
         double prevLoss;
         double newLoss;
+        ArrayList<Double> lossesChanges = new ArrayList<>();
         do {
-            prevLoss = lossFunction(X, this.weights, y);
-            double[] weightsDelta = lossFunctionDerivative(X, this.weights, y);
+            prevLoss = lossFunction(transformedX, this.weights, y);
+            double[] weightsDelta = lossFunctionDerivative(transformedX, this.weights, y, this.alpha, this.betta);
             for(int i = 0; i < this.weights.length; i++) {
                 this.weights[i] -= weightsDelta[i] * this.learnRate;
             }
-            newLoss = lossFunction(X, this.weights, y);
-            lossChange = newLoss - prevLoss;
+            newLoss = lossFunction(transformedX, this.weights, y);
+            lossChange = prevLoss - newLoss;
+            lossesChanges.add(lossChange);
             iterCounter ++;
         } while (lossChange > 0.00001 && iterCounter < this.maxIter);
-
-
+        this.fitted = true;
         return this;
     }
 
@@ -128,7 +132,7 @@ public class LogisticRegression implements MlModel {
         }
         double[] transformedX = new double[X.length + 1];
         System.arraycopy(X, 0, transformedX, 0, X.length);
-        transformedX[X.length] = -1;
+        transformedX[X.length] = 1;
         return MathService.sigmoid(transformedX, this.weights);
     }
 
@@ -145,13 +149,15 @@ public class LogisticRegression implements MlModel {
         return lossValue / X.length;
     }
 
-    private double[] lossFunctionDerivative(double[][] X, double[] W, int[] y) throws InconveninentShapeException {
+    private double[] lossFunctionDerivative(double[][] X, double[] W,
+                                            int[] y, float alpha, float betta) throws InconveninentShapeException {
         double[] weightDerivatives = new double[W.length];
         double yHat;
         for(int j = 0; j < X.length; j++) {
             yHat = MathService.sigmoid(X[j], W);
             for(int i = 0; i < W.length; i++) {
-                weightDerivatives[i] = - (X[j][i] * y[j] * (1 - yHat) - X[j][i] * yHat * (1 - y[j]));
+                weightDerivatives[i] = X[j][i] * (yHat - y[j]) + 2 * alpha * W[i]
+                        + betta * (W[i] > 0 ? 1 : W[i] == 0 ? 0 : -1);
             }
         }
         for(int k = 0; k < weightDerivatives.length; k++) {
@@ -160,9 +166,4 @@ public class LogisticRegression implements MlModel {
         return weightDerivatives;
     }
 
-    private void updateWeights(double[] deltaW) {
-        for(int i = 0; i < deltaW.length; i++) {
-            this.weights[i] -= deltaW[i];
-        }
-    }
 }

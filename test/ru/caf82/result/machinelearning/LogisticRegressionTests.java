@@ -10,9 +10,9 @@ import ru.caf82.result.machinelearning.models.LogisticRegression;
 public class LogisticRegressionTests {
 
     float alpha = 0.0f;
-    float betta = 0.2f;
+    float betta = 0.0f;
     int maxIter = 200000;
-    float learnRate = 0.001f;
+    float learnRate = 0.1f;
 
     @Test
     public void initializeTests() {
@@ -22,29 +22,29 @@ public class LogisticRegressionTests {
 
     @Test
     public void trainLinearSeparableTests() {
-        double[][] X = {
-            {0, 0},
-            {0, 10},
-            {10, 0},
-            {10, 10},
-        };
-        int[] y = {0, 0, 0, 1};
+        double[][] xTest = new double[10000][2];
+        int[] yTest = new int[10000];
+        int fillCounter = 0;
+        for(int i = 0; i < 100; i++) {
+            for(int j = 0; j < 100; j++) {
+                xTest[fillCounter] = new double[]{i, j};
+                yTest[fillCounter] = i > j ? 1 : 0;
+                fillCounter++;
+            }
+        }
         LogisticRegression clf = new LogisticRegression(alpha, betta, maxIter, learnRate);
         try {
-            clf.train(X, y);
+            clf.train(xTest, yTest);
         } catch (InconveninentShapeException e) {
             e.printStackTrace();
         }
         try {
-            System.out.println(clf.predictProba(new double[]{0, 0}));
-            System.out.println(clf.predictProba(new double[]{10, 0}));
-            System.out.println(clf.predictProba(new double[]{0, 10}));
-            System.out.println(clf.predictProba(new double[]{10, 10}));
-            System.out.println(clf.getWeights());
-            Assert.assertEquals(0, clf.predict(new double[]{0, 0}));
-            Assert.assertEquals(0, clf.predict(new double[]{0, 10}));
-            Assert.assertEquals(0, clf.predict(new double[]{10, 0}));
-            Assert.assertEquals(1, clf.predict(new double[]{10, 10}));
+            float scoreSum = 0;
+            for(int i = 0; i < xTest.length; i++) {
+                int yPred = clf.predict(xTest[i]);
+                scoreSum += yPred == yTest[i] ? 1 : 0;
+            }
+            Assert.assertTrue(scoreSum / xTest.length > 0.65);
         } catch (ModelNotFittedException e) {
             e.printStackTrace();
         } catch (InconveninentShapeException e) {
