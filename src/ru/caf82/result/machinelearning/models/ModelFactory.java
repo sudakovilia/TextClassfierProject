@@ -30,6 +30,20 @@ public class ModelFactory {
                 learnRate, parallel);
     }
 
+    public NaiveBayes getNaiveBayes(float alpha, boolean paralell) {
+        return new NaiveBayes(alpha, paralell);
+    }
+
+
+    public NaiveBayes getNaiveBayes(float alpha) {
+        return new NaiveBayes(alpha, DEFAULT_PARALL);
+    }
+
+
+    public NaiveBayes getNaiveBayes() {
+        return new NaiveBayes(DEFAULT_ALPHA, DEFAULT_PARALL);
+    }
+
     public LogisticRegression getLogisticRegression(String filename) {
         try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
             LogisticRegression logReg = (LogisticRegression) ois.readObject();

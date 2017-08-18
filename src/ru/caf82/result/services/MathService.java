@@ -73,6 +73,14 @@ public class MathService {
         return eMatrix;
     }
 
+    public static double getRowSum(double[] X) {
+        double sum = 0;
+        for(double i : X) {
+            sum += i;
+        }
+        return sum;
+    }
+
     /**
      * Обращение с помощью метода гаусса-жордано
      * @param A

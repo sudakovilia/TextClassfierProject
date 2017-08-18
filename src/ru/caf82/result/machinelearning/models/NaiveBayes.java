@@ -2,17 +2,22 @@ package ru.caf82.result.machinelearning.models;
 
 import ru.caf82.result.exceptions.InconveninentShapeException;
 import ru.caf82.result.exceptions.ModelNotFittedException;
+import ru.caf82.result.services.MathService;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class NaiveBayes implements MlModel{
 
-    private int alpha;
+    private float alpha;
     private double[][] weights;
     private boolean fitted;
+    private boolean parallel;
 
-    public NaiveBayes(int alpha) {
+    public NaiveBayes(float alpha, boolean parallel) {
         this.fitted = false;
+        this.parallel = parallel;
         this.alpha = alpha;
     }
 
@@ -26,12 +31,12 @@ public class NaiveBayes implements MlModel{
             int neg = 0;
             int total = 0;
             for(int k = 0; k < X.length; k++) {
-                if(X[k][j]!=0){
-                    total++;
+                if(X[k][j] != 0){
+                    total += X[k][j];
                     if(y[k] == 0) {
-                        neg++;
+                        neg += X[k][j];
                     } else {
-                        pos++;
+                        pos += X[k][j];
                     }
                 }
             }
@@ -46,18 +51,34 @@ public class NaiveBayes implements MlModel{
 
     @Override
     public int predict(double[] X) throws ModelNotFittedException, InconveninentShapeException {
-        return 0;
+        double productZero = MathService.dotProduct(X, this.weights[0]) / MathService.getRowSum(X);
+        double productOne = MathService.dotProduct(X, this.weights[1]) / MathService.getRowSum(X);
+        return productOne > productZero ? 1 : 0;
     }
 
     @Override
     public double predictProba(double[] X) throws ModelNotFittedException, InconveninentShapeException {
-        return 0;
+        return MathService.dotProduct(X, this.weights[1]) / MathService.getRowSum(X);
     }
 
     @Override
     public void saveToFile(String filename) throws IOException {
-
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(this);
+        } catch (IOException ex) {
+            throw new IOException("Косяк в записи");
+        }
     }
 
+    public float getAlpha() {
+        return alpha;
+    }
 
+    public double[][] getWeights() {
+        return weights;
+    }
+
+    public boolean isFitted() {
+        return fitted;
+    }
 }

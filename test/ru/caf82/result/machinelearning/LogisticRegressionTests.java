@@ -7,7 +7,6 @@ import ru.caf82.result.exceptions.InconveninentShapeException;
 import ru.caf82.result.exceptions.ModelNotFittedException;
 import ru.caf82.result.machinelearning.models.LogisticRegression;
 import ru.caf82.result.machinelearning.models.ModelFactory;
-import ru.caf82.result.services.MathService;
 
 public class LogisticRegressionTests {
 
@@ -47,7 +46,6 @@ public class LogisticRegressionTests {
                 int yPred = clf.predict(xTest[i]);
                 scoreSum += yPred == yTest[i] ? 1 : 0;
             }
-            System.out.println(scoreSum);
             Assert.assertTrue(scoreSum / xTest.length > 0.65);
         } catch (ModelNotFittedException e) {
             e.printStackTrace();
@@ -80,7 +78,6 @@ public class LogisticRegressionTests {
                 int yPred = clf.predict(xTest[i]);
                 scoreSum += yPred == yTest[i] ? 1 : 0;
             }
-            System.out.println(scoreSum);
             Assert.assertTrue(scoreSum / xTest.length > 0.65);
         } catch (ModelNotFittedException e) {
             e.printStackTrace();
