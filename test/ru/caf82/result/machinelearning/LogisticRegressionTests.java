@@ -6,6 +6,7 @@ import org.junit.Test;
 import ru.caf82.result.exceptions.InconveninentShapeException;
 import ru.caf82.result.exceptions.ModelNotFittedException;
 import ru.caf82.result.machinelearning.models.LogisticRegression;
+import ru.caf82.result.machinelearning.models.ModelFactory;
 import ru.caf82.result.services.MathService;
 
 public class LogisticRegressionTests {
@@ -14,10 +15,11 @@ public class LogisticRegressionTests {
     float betta = 0.0f;
     int maxIter = 2000;
     float learnRate = 0.7f;
+    private ModelFactory modelFactory = new ModelFactory();
 
     @Test
     public void initializeTests() {
-        LogisticRegression clf = new LogisticRegression(alpha, betta, maxIter, learnRate);
+        LogisticRegression clf = modelFactory.getLogisticRegression(alpha, betta, maxIter, learnRate);
         Assert.assertEquals(clf.getClass(), LogisticRegression.class);
     }
 
@@ -33,7 +35,7 @@ public class LogisticRegressionTests {
                 fillCounter++;
             }
         }
-        LogisticRegression clf = new LogisticRegression(alpha, betta, maxIter, learnRate);
+        LogisticRegression clf = modelFactory.getLogisticRegression(alpha, betta, maxIter, learnRate);
         try {
             clf.train(xTest, yTest);
         } catch (InconveninentShapeException e) {
@@ -66,7 +68,7 @@ public class LogisticRegressionTests {
                 fillCounter++;
             }
         }
-        LogisticRegression clf = new LogisticRegression(alpha, betta, maxIter, learnRate);
+        LogisticRegression clf = modelFactory.getLogisticRegression(alpha, betta, maxIter, learnRate);
         try {
             clf.train(xTest, yTest);
         } catch (InconveninentShapeException e) {

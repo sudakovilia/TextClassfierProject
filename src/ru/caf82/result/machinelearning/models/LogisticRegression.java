@@ -4,13 +4,13 @@ import ru.caf82.result.exceptions.InconveninentShapeException;
 import ru.caf82.result.exceptions.ModelNotFittedException;
 import ru.caf82.result.services.MathService;
 
-import java.util.ArrayList;
+import java.io.*;
 import java.util.Random;
 
 /**
  * Created by kinetik on 07.08.17.
  */
-public class LogisticRegression implements MlModel {
+public class LogisticRegression implements MlModel, Serializable {
     /**
      * alpha - l2 regularizer coefficient
      * betta - l1 regularizer coefficient
@@ -24,7 +24,7 @@ public class LogisticRegression implements MlModel {
     private float alpha;
     private float betta;
     private int maxIter;
-    private boolean parralize = true;
+    private boolean parralize;
     private float learnRate;
     private Random initializer = new Random();
 
@@ -39,13 +39,6 @@ public class LogisticRegression implements MlModel {
         this.parralize = parralize;
     }
 
-    public LogisticRegression(float alpha, float betta, int maxIter, float learnRate) {
-        this.alpha = alpha;
-        this.betta = betta;
-        this.maxIter = maxIter;
-        this.learnRate = learnRate;
-    }
-
     /**
      * @param X matrix objects (in row) and features (in columns)
      * @param y model answers
@@ -54,11 +47,7 @@ public class LogisticRegression implements MlModel {
      * step 1. shape check. We don't check features number equality
      * step 2. weights initialization. Weights are initialized from normal distribution (mean = 0, std = 1)
      * step 3. y shift. Input has y values 0 and 1. We shift it to -1 and 1
-     * step 4. GradientDescend:
-     * while number_of_iteration < maximum_iteration and delta_loss < threshold:
-     * old_loss = cross_entropy(X, y)
-     * weights += learning_rate * delta_weight
-     * delta_loss = abs(old_loss - cross_entropy(X, y))
+     * step 4. GradientDescend
      * step 5. set model fitted to true
      * @throws InconveninentShapeException
      */
@@ -134,9 +123,67 @@ public class LogisticRegression implements MlModel {
         return MathService.sigmoid(transformedX, this.weights);
     }
 
+    @Override
+    public void saveToFile(String filename) throws IOException {
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(this);
+        } catch (IOException ex) {
+            throw new IOException("Can't save the model");
+        }
+    }
+
     public double[] getWeights() {
         return this.weights;
     }
+
+    public float getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(float alpha) {
+        this.alpha = alpha;
+    }
+
+    public float getBetta() {
+        return betta;
+    }
+
+    public void setBetta(float betta) {
+        this.betta = betta;
+    }
+
+    public int getMaxIter() {
+        return maxIter;
+    }
+
+    public void setMaxIter(int maxIter) {
+        this.maxIter = maxIter;
+    }
+
+    public boolean isParralize() {
+        return parralize;
+    }
+
+    public void setParralize(boolean parralize) {
+        this.parralize = parralize;
+    }
+
+    public float getLearnRate() {
+        return learnRate;
+    }
+
+    public void setLearnRate(float learnRate) {
+        this.learnRate = learnRate;
+    }
+
+    /**
+     * The loss function computation: loss = - 1/n * sum(y*ln(y_hat)+ (1-y)*ln(1-y_hat))
+     * @param X matrix of features (columns) and objects (rows)
+     * @param W weights (vector)
+     * @param y result output (vector)
+     * @return double loss function value
+     * @throws InconveninentShapeException
+     */
 
     private double lossFunction(double[][] X, double[] W, int[] y) throws InconveninentShapeException {
         double lossValue = 0;
@@ -154,6 +201,17 @@ public class LogisticRegression implements MlModel {
         }
         return lossValue / X.length;
     }
+
+    /**
+     * compute loss function derivatives dLoss/dw = x*(y_hat - y) + 2 * alpha * w + 2 * beta * sign(w)
+     * @param X matrix of features (columns) and objects (rows)
+     * @param W weights (vector)
+     * @param y result output (vector)
+     * @param alpha l2 regularization coeff
+     * @param betta l1 regularization coeff
+     * @return array of losses for weights
+     * @throws InconveninentShapeException
+     */
 
     private double[] lossFunctionDerivative(double[][] X, double[] W,
                                             int[] y, float alpha, float betta) throws InconveninentShapeException {

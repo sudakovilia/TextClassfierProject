@@ -22,4 +22,14 @@ public class NaiveBayes implements MlModel{
     public double predictProba(double[] X) throws ModelNotFittedException, InconveninentShapeException {
         return 0;
     }
+
+    @Override
+    public void saveToFile() {
+
+    }
+
+    @Override
+    public MlModel loadFromFile() {
+        return null;
+    }
 }
