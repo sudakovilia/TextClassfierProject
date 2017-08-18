@@ -2,7 +2,6 @@ package ru.caf82.result.services;
 
 import ru.caf82.result.exceptions.InconveninentShapeException;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -38,10 +37,75 @@ public class MathService {
                 stdValue += (value - meanValue) * (value - meanValue);
             }
             stdValue /= (X[i].length - 1);
-            for(int j = 0; j < X[i].length; j++) {
-                X[i][j] = (X[i][j] - meanValue) / Math.sqrt(stdValue);
+            if(stdValue != 0) {
+                for(int j = 0; j < X[i].length; j++) {
+                    X[i][j] = (X[i][j] - meanValue) / Math.sqrt(stdValue);
+                }
             }
         }
         return X;
+    }
+
+    public static double[] vectorNormalize(double[] X) {
+        double meanValue;
+        double stdValue = 0;
+        meanValue = Arrays.stream(X).sum() / X.length;
+        for(double value : X) {
+            stdValue += (value - meanValue) * (value - meanValue);
+        }
+        stdValue /= (X.length - 1);
+        if(stdValue == 0) {
+            return X;
+        }
+        for(int j = 0; j < X.length; j++) {
+            X[j] = (X[j] - meanValue) / Math.sqrt(stdValue);
+        }
+        return X;
+    }
+
+    public static float[][] getUniMatrix(int n) {
+        float[][] eMatrix = new float[n][n];
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                eMatrix[i][j] = i == j ? 1f : 0f;
+            }
+        }
+        return eMatrix;
+    }
+
+    /**
+     * Обращение с помощью метода гаусса-жордано
+     * @param A
+     */
+    public static float[][] inversion(float[][] A){
+        double temp;
+        int lengthMatrix = A.length;
+        float[][] E = getUniMatrix(lengthMatrix);
+        for (int k = 0; k < lengthMatrix; k++) {
+            temp = A[k][k];
+            if(temp != 0) {
+                for (int j = 0; j < lengthMatrix; j++) {
+                    A[k][j] /= temp;
+                    E[k][j] /= temp;
+                }
+            }
+            for (int i = k + 1; i < lengthMatrix; i++) {
+                temp = A[i][k];
+                for (int j = 0; j < lengthMatrix; j++) {
+                    A[i][j] -= A[k][j] * temp;
+                    E[i][j] -= E[k][j] * temp;
+                }
+            }
+        }
+        for (int k = lengthMatrix - 1; k > 0; k--) {
+            for (int i = k - 1; i >= 0; i--) {
+                temp = A[i][k];
+                for (int j = 0; j < lengthMatrix; j++) {
+                    A[i][j] -= A[k][j] * temp;
+                    E[i][j] -= E[k][j] * temp;
+                }
+            }
+        }
+        return E;
     }
 }

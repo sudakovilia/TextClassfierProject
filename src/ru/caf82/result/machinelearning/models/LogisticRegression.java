@@ -76,14 +76,12 @@ public class LogisticRegression implements MlModel {
         }
         this.weights = new double[transformedX[0].length];
         for (int i = 0; i < transformedX[0].length; i++) {
-            //this.weights[i] = initializer.nextGaussian();
-            this.weights[i] = 0;
+            this.weights[i] = initializer.nextGaussian();
         }
         double lossChange;
         int iterCounter = 0;
         double prevLoss;
         double newLoss;
-        ArrayList<Double> lossesChanges = new ArrayList<>();
         do {
             prevLoss = lossFunction(transformedX, this.weights, y);
             double[] weightsDelta = lossFunctionDerivative(transformedX, this.weights, y, this.alpha, this.betta);
@@ -92,9 +90,8 @@ public class LogisticRegression implements MlModel {
             }
             newLoss = lossFunction(transformedX, this.weights, y);
             lossChange = prevLoss - newLoss;
-            lossesChanges.add(lossChange);
             iterCounter ++;
-        } while (lossChange > 0.00001 && iterCounter < this.maxIter);
+        } while (lossChange > 0.00000000001 && iterCounter < this.maxIter);
         this.fitted = true;
         return this;
     }
@@ -130,6 +127,7 @@ public class LogisticRegression implements MlModel {
         if (!fitted) {
             throw new ModelNotFittedException();
         }
+        X = MathService.vectorNormalize(X);
         double[] transformedX = new double[X.length + 1];
         System.arraycopy(X, 0, transformedX, 0, X.length);
         transformedX[X.length] = 1;
@@ -142,9 +140,17 @@ public class LogisticRegression implements MlModel {
 
     private double lossFunction(double[][] X, double[] W, int[] y) throws InconveninentShapeException {
         double lossValue = 0;
+        double tmp;
         for(int i = 0; i < X.length; i++) {
             double yHat = MathService.sigmoid(X[i], W);
-            lossValue += -(y[i]*Math.log(yHat) + (1 - y[i])*Math.log(1 - yHat));
+            if(yHat == 1) {
+                yHat = 0.99;
+            }
+            if(yHat == 0) {
+                yHat = 0.01;
+            }
+            tmp = -(y[i]*Math.log(yHat) + (1 - y[i])*Math.log(1 - yHat));
+            lossValue += tmp;
         }
         return lossValue / X.length;
     }
@@ -156,7 +162,7 @@ public class LogisticRegression implements MlModel {
         for(int j = 0; j < X.length; j++) {
             yHat = MathService.sigmoid(X[j], W);
             for(int i = 0; i < W.length; i++) {
-                weightDerivatives[i] = X[j][i] * (yHat - y[j]) + 2 * alpha * W[i]
+                weightDerivatives[i] += X[j][i] * (yHat - y[j]) + 2 * alpha * W[i]
                         + betta * (W[i] > 0 ? 1 : W[i] == 0 ? 0 : -1);
             }
         }
