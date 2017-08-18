@@ -14,7 +14,7 @@ public interface MlModel{
 
     int predict(double[] X) throws ModelNotFittedException, InconveninentShapeException;
 
-    double predictProba(double[] X) throws ModelNotFittedException, InconveninentShapeException;
+    double[] predictProba(double[] X) throws ModelNotFittedException, InconveninentShapeException;
 
     void saveToFile(String filename) throws IOException;
 

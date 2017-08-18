@@ -99,7 +99,7 @@ public class LogisticRegression implements MlModel, Serializable {
         if (!fitted) {
             throw new ModelNotFittedException();
         }
-        return this.predictProba(X) >= 0.5 ? 1 : 0;
+        return this.predictProba(X)[1] >= 0.5 ? 1 : 0;
     }
 
     /**
@@ -112,7 +112,7 @@ public class LogisticRegression implements MlModel, Serializable {
      */
 
     @Override
-    public double predictProba(double[] X) throws ModelNotFittedException, InconveninentShapeException {
+    public double[] predictProba(double[] X) throws ModelNotFittedException, InconveninentShapeException {
         if (!fitted) {
             throw new ModelNotFittedException();
         }
@@ -120,7 +120,8 @@ public class LogisticRegression implements MlModel, Serializable {
         double[] transformedX = new double[X.length + 1];
         System.arraycopy(X, 0, transformedX, 0, X.length);
         transformedX[X.length] = 1;
-        return MathService.sigmoid(transformedX, this.weights);
+        double prediction = MathService.sigmoid(transformedX, this.weights);
+        return new double[]{1 - prediction, prediction};
     }
 
     @Override

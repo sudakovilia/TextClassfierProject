@@ -57,8 +57,9 @@ public class NaiveBayes implements MlModel{
     }
 
     @Override
-    public double predictProba(double[] X) throws ModelNotFittedException, InconveninentShapeException {
-        return MathService.dotProduct(X, this.weights[1]) / MathService.getRowSum(X);
+    public double[] predictProba(double[] X) throws ModelNotFittedException, InconveninentShapeException {
+        return new double[]{MathService.dotProduct(X, this.weights[0]) / MathService.getRowSum(X),
+                MathService.dotProduct(X, this.weights[1]) / MathService.getRowSum(X)};
     }
 
     @Override
