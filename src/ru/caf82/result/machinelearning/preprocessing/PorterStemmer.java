@@ -91,6 +91,6 @@ public class PorterStemmer implements Transformer, WordProcessor {
             System.out.println("Результат применения PorterStemmer к слову " + word + " : " +porterStemmer.stem(word));
         }
     }
-
 }
+
 
