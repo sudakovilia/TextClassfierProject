@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9716486f-4c52-403a-8644-e817c33acf17" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ru/caf82/lectures/lecture02/MathService.java" />
+    <list default="true" id="9716486f-4c52-403a-8644-e817c33acf17" name="Default" comment="seems like MathService works fine">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ru/caf82/lectures/lecture02/MathServiceTest.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ru/caf82/lectures/lecture02/MathService.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -14,15 +15,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MathService.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/ru/caf82/lectures/lecture02/MathService.java">
+      <file leaf-file-name="MathServiceTest.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/ru/caf82/lectures/lecture02/MathServiceTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-              <folding>
-                <element signature="e#108#109#0" expanded="true" />
-                <element signature="e#151#152#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="475">
+              <caret line="19" column="22" lean-forward="true" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -44,6 +42,7 @@
       <list>
         <option value="$PROJECT_DIR$/src/ru/caf82/lectures/lecture02/MyHomeWork2.java" />
         <option value="$PROJECT_DIR$/src/ru/caf82/lectures/lecture02/MathService.java" />
+        <option value="$PROJECT_DIR$/src/ru/caf82/lectures/lecture02/MathServiceTest.java" />
       </list>
     </option>
   </component>
@@ -96,6 +95,14 @@
               <item name="caf82" type="462c0819:PsiDirectoryNode" />
               <item name="lecture02" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="TextClassfierProject" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TextClassfierProject" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="caf82" type="462c0819:PsiDirectoryNode" />
+              <item name="lecture02" type="462c0819:PsiDirectoryNode" />
+              <item name="MathServiceTest.java" type="529ef68f:ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -103,7 +110,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="jdk.selected.JAVA_MODULE" value="1.8" />
@@ -121,7 +128,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.MathService">
+  <component name="RunManager" selected="Application.MathServiceTest">
     <configuration name="BoxingExample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ru.caf82.lectures.lecture02.BoxingExample" />
       <option name="VM_PARAMETERS" value="" />
@@ -148,8 +155,8 @@
       <module name="TextClassfierProject" />
       <envs />
     </configuration>
-    <configuration name="MathService" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ru.caf82.lectures.lecture02.MathService" />
+    <configuration name="MathServiceTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ru.caf82.lectures.lecture02.MathServiceTest" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
@@ -220,11 +227,11 @@
     <list size="3">
       <item index="0" class="java.lang.String" itemvalue="Application.BoxingExample" />
       <item index="1" class="java.lang.String" itemvalue="Application.BreakAndContinueExample" />
-      <item index="2" class="java.lang.String" itemvalue="Application.MathService" />
+      <item index="2" class="java.lang.String" itemvalue="Application.MathServiceTest" />
     </list>
     <recent_temporary>
       <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Application.MathService" />
+        <item index="0" class="java.lang.String" itemvalue="Application.MathServiceTest" />
         <item index="1" class="java.lang.String" itemvalue="Application.BreakAndContinueExample" />
         <item index="2" class="java.lang.String" itemvalue="Application.BoxingExample" />
       </list>
@@ -262,6 +269,11 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="created MathService" />
+    <MESSAGE value="seems like MathService works fine" />
+    <option name="LAST_COMMIT_MESSAGE" value="seems like MathService works fine" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -302,12 +314,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ru/caf82/lectures/lecture02/MathService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding>
-            <element signature="e#108#109#0" expanded="true" />
-            <element signature="e#151#152#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ru/caf82/lectures/lecture02/MathServiceTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="475">
+          <caret line="19" column="22" lean-forward="true" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
