@@ -19,4 +19,7 @@ class MathService{
 
         return result;
     }
+     public static double sigmoid(double x){
+        return 0;
+     }
 }
